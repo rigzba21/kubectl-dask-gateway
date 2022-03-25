@@ -4,18 +4,40 @@ use kube::{
     Client,
 };
 use k8s_openapi::api::core::v1::Pod;
+use dialoguer::MultiSelect;
 use std::env;
 
+
 async fn list_pods(_client: Client, namespace: &str) -> Result<(), Box<dyn std::error::Error>> {
-    println!("Getting Pods in Namespace: {}", namespace);
+    println!("Getting dask-scheduler Pods in Namespace: {}", namespace);
     let pods: Api<Pod> = Api::namespaced(_client, namespace);
+
+    let mut dask_clusters: Vec<String> = Vec::new();
 
     let list_params = ListParams::default();
     for p in pods.list(&list_params).await? {
-        println!("Found Pod: {}", p.name());
+        if p.name().contains("dask-scheduler") {
+            println!("Found dask-scheduler: {}", p.name());
+            dask_clusters.push(p.name());
+        }
     }
 
-    Ok(())
+    if dask_clusters.is_empty() {
+        println!("No Dask-Gateway Clusters Found....");
+        return Ok(())
+    }
+    else {
+
+        let chosen: Vec<usize> = MultiSelect::new()
+            .with_prompt("Select Dask Cluster with <SPACEBAR>")
+            .items(&dask_clusters)
+            .interact()?;
+
+        println!("{:#?}", chosen);
+
+        return Ok(())
+
+    }
 }
 
 
