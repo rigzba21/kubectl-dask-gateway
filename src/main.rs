@@ -4,8 +4,20 @@ use kube::{
     Client,
 };
 use k8s_openapi::api::core::v1::Pod;
-
 use std::env;
+
+async fn list_pods(_client: Client, namespace: &str) -> Result<(), Box<dyn std::error::Error>> {
+    println!("Getting Pods in Namespace: {}", namespace);
+    let pods: Api<Pod> = Api::namespaced(_client, namespace);
+
+    let list_params = ListParams::default();
+    for p in pods.list(&list_params).await? {
+        println!("Found Pod: {}", p.name());
+    }
+
+    Ok(())
+}
+
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -19,14 +31,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // get namespace
     let args: Vec<String> = env::args().collect();
-    let namespace = &args[1];
+    let _subcommand = &args[1];
 
-    println!("Getting Pods in Namespace: {}", namespace);
-    let pods: Api<Pod> = Api::namespaced(_client, namespace);
-
-    let list_params = ListParams::default();
-    for p in pods.list(&list_params).await? {
-        println!("Found Pod: {}", p.name());
+    match _subcommand.as_str() {
+    "list" => list_pods(_client, &args[2]).await?,
+    _ => eprintln!("bad subcommand")
     }
 
     Ok(())
