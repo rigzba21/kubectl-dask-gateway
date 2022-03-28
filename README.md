@@ -11,6 +11,6 @@ context, while the cluster pods are still present and consuming resources.
 
 - [ ] Provide an _admin_ view into the running dask clusters in kubernetes
 - [ ] Ability to select and delete dask clusters that failed to terminate properly
-- [ ] Provide an audit-log/manifest (user signature + verification?) of dask cluster creation
+- [ ] Provide an audit-log/manifest record (user signature + verification?) of dask cluster creation
 
 
