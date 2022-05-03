@@ -7,6 +7,9 @@ Sometimes dask-gateway clusters fail to shutdown. For example the user's jupyter
 notebook kernel fails, leaving the cluster reference lost in the notebook runtime 
 context, while the cluster pods are still present and consuming resources. 
 
+It would be nice to have a SLSA-compliant attestation or record to audit who created a given cluster,
+with a timestamp, resources requested, or anything else useful...
+
 ### Goals/Roadmap
 
 > I want to have a single pane-of-glass view into the state of running dask clusters in K8S
@@ -16,6 +19,6 @@ context, while the cluster pods are still present and consuming resources.
 - [ ] Provide an _admin_ view into the running dask clusters in kubernetes
 - [ ] Ability to select and delete dask clusters that failed to terminate properly
 - [ ] Provide an audit-log/manifest record (user signature + verification?) of dask cluster creation
-
+- [ ] In-cluster controller to manage gateway cluster metadata and resource lifecycle 
 
 
